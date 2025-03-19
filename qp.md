@@ -747,7 +747,7 @@ void main() {
 -   TMOD = 1 (mode select always set 1 for our case)
 -   TH0 and TL0 is the delay required, ie the value the timer must count to
 -   TR0 - ready signal. (when TR0 = 1, timer starts. else it stops)
--   TF0 - the signal is 1 if timer has completed counting
+-   TF0 - the signal is 0 if timer has completed counting else it is 1
 
 - Timer Working to determine TH0 and TL0 values: 
 - ![1742419130278](image/qp/1742419130278.png)

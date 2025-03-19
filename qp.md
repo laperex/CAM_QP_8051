@@ -581,6 +581,11 @@ void main() {
 
 41. ![1742418298511](image/qp/1742418298511.png)
 
+- XTAL = 24 MHz → Machine cycle = 1 / (24MHz / 12) = 0.5 µs.
+- To get 100 µs, you need 200 counts (100 µs / 0.5 µs).
+- 65536 - 200 = 65336 = 0xFF9C, so we load TH0 = 0xFF, TL0 = 0x9C.
+- Timer 0 toggles P2.1 every 100 µs, creating a square wave with a 200 µs period (5 kHz).
+
 ```C
 #include <reg52.h>  // For AT89S52
 
@@ -638,6 +643,72 @@ void main() {
             }
         }
     }
+
+```
+
+43. ![1742418369848](image/qp/1742418369848.png)
+- The **sfr** keyword stands for **Special Function Register**. It is used in embedded C (especially with 8051 microcontrollers) to declare and access specific **memory-mapped registers** that control the microcontroller’s peripherals like ports, timers, serial communication, etc.
+```C
+#include <reg51.h>
+
+// Using sfr keyword to declare ports
+sfr P0 = 0x80;
+sfr P1 = 0x90;
+sfr P2 = 0xA0;
+
+void delay_250ms() {
+    unsigned int i, j;
+    for (i = 0; i < 250; i++) {
+        for (j = 0; j < 120; j++) {
+            // Approximate 1ms delay (for 12MHz crystal)
+        }
+    }
+}
+
+void main() {
+    while (1) {
+        P0 = ~P0;  // Toggle all bits of P0
+        P1 = ~P1;  // Toggle all bits of P1
+        P2 = ~P2;  // Toggle all bits of P2
+        delay_250ms();  // 250 ms delay
+    }
+}
+
+```
+
+44. ![1742418571866](image/qp/1742418571866.png)
+
+```C
+#include <reg51.h>
+
+sfr P1 = 0x90; // Port 1
+sbit EN = P2^0; // Enable pin on P2.0
+
+void delay(unsigned int ms) {
+    unsigned int i, j;
+    for(i = 0; i < ms; i++)
+        for(j = 0; j < 1275; j++); // Roughly 1 ms delay for 12MHz clock
+}
+
+void lcd_send(char ch) {
+    P1 = ch;   // Put character on data lines
+    EN = 1;    // Enable high
+    delay(1);  // Small delay
+    EN = 0;    // Enable low (data latched)
+    delay(1);
+}
+
+void main() {
+    char str[] = "ECED-JCET";
+    unsigned char i;
+    
+    while(1) {
+        for(i = 0; str[i] != '\0'; i++) {
+            lcd_send(str[i]);
+        }
+        while(1); // Stop after sending the string once
+    }
+}
 
 ```
 

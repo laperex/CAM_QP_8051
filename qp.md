@@ -137,13 +137,40 @@ otherwise, send it to P2.**
 8. ![1742399587021](image/qp/1742399587021.png)
 
 ```
+    MOV DPTR, #0050H    ; DPTR = 50H
+    
+    MOVX A, @DPTR       ; A = MEMORY[dptr] (value in memory at adress dptr (50)) [get first value]
+    MOV R0, A           ; R0 = A
+    
+    INC DPTR            ; DPTR = 51H
+    MOVX A, @DPTR       ; get 2nd value
+    ADD A, R0           ; A = A + R0
 
+    INC DPTR            ; DPTR = 52H
+    MOVX @DPTR, A       ; MEMORY[DPTR] = A
+
+    INC DPTR
+    MOV A, #00H         ; A = 0
+    ADDC A, #00H        ; A = A + C
+    MOVX @DPTR, A       ; MEMORY[DPTR] = A [store carry]
+    
+WAIT:
+    LJMP WAIT
 ```
 
 9. ![1742399629565](image/qp/1742399629565.png)
 
 ```
+    MOV DPTR, #0050H    ; DPTR = 50H
+    MOV A, #FFH         ; A = FFH
+    MOV R0, #08         ; R0 = 08H
 
+LOOP:
+    MOVX @DPTR, A       ; MEM[DPTR] = A
+    DJNZ R0, LOOP       ; R0 = R0 - 1 and jump if R0 != 0
+
+WAIT:
+    LJMP WAIT
 ```
 
 10. ![1742399642305](image/qp/1742399642305.png)
@@ -223,5 +250,11 @@ otherwise, send it to P2.**
             }
         }
     }
+
+```
+
+45. ![1742405811658](image/qp/1742405811658.png)
+
+```
 
 ```

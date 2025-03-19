@@ -404,7 +404,7 @@ SUM_LOOP:
 
     ; --- End ---
 WAIT:
-    SJMP WAIT
+    LJMP WAIT
 
 ```
 
@@ -453,10 +453,57 @@ WAIT:
 
 20. ![1742417238835](image/qp/1742417238835.png)
 
+nibble  = 4 bits
+byte    = 8 bits
+
+lower nibble = lower 4 bits of data
+
 ```
+    ; --- Load data from 6000H ---
+    MOV DPTR, #6000H
+    MOVX A, @DPTR       ; Load data from 6000H into A
+    MOV R0, A           ; Store A in R0 (data1)
+
+    ; --- Load data from 6001H ---
+    MOV DPTR, #6001H
+    MOVX A, @DPTR       ; Load data from 6001H into A
+    MOV R1, A           ; Store A in R1 (data2)
+
+    ; --- Exchange lower nibbles ---
+    MOV A, R0
+    ANL A, #0F0H        ; Keep upper nibble of data1
+    MOV R2, A           ; Store in R2
+
+    MOV A, R1
+    ANL A, #0FH         ; Get lower nibble of data2
+    ORL A, R2           ; Combine with upper nibble of data1
+    MOV R3, A           ; Store exchanged data1
+
+    MOV A, R1
+    ANL A, #0F0H        ; Keep upper nibble of data2
+    MOV R2, A
+
+    MOV A, R0
+    ANL A, #0FH         ; Get lower nibble of data1
+    ORL A, R2           ; Combine with upper nibble of data2
+    MOV R4, A           ; Store exchanged data2
+
+    ; --- Store exchanged values back ---
+    MOV DPTR, #6000H
+    MOV A, R3
+    MOVX @DPTR, A       ; Store back to 6000H
+
+    MOV DPTR, #6001H
+    MOV A, R4
+    MOVX @DPTR, A       ; Store back to 6001H
+
+    ; --- End ---
+WAIT:
+    LJMP WAIT
+
 ```
 
-42. ![1742400109794](image/qp/1742400109794.png)
+1.  ![1742400109794](image/qp/1742400109794.png)
 
 ```C
     #include <reg51.h>

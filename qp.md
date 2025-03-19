@@ -255,8 +255,8 @@ WAIT:
 12. ![1742399657760](image/qp/1742399657760.png)
 
 ```
-MOV A, #0FFH        ; Load FFH into accumulator
-MOV DPTR, #0050H    ; Set external address to 50H
+    MOV A, #0FFH        ; Load FFH into accumulator
+    MOV DPTR, #0050H    ; Set external address to 50H
 
 LOOP:
     MOVX @DPTR, A   ; Write FFH to external memory
@@ -272,10 +272,38 @@ WAIT: LJMP WAIT
 13. ![1742399664522](image/qp/1742399664522.png)
 
 ```
+    ; --- Load first BCD LSB from external memory 60H ---
+    MOV DPTR, #0060H
+    MOVX A, @DPTR        ; A = [60H]
+    MOV R0, A           ; R0 = A
+
+    ; --- Load second BCD LSB from external memory 61H ---
+    MOV DPTR, #0061H
+    MOVX A, @DPTR       ; A = [61H] temporarily store in R0
+
+    ; --- Add the BCD LSBs ---
+    ADD A, R0            ; A = A + R0
+    DA A                 ; Adjust to BCD
+
+    ; --- Store result LSB to 52H ---
+    MOV DPTR, #0052H
+    MOVX @DPTR, A
+
+    ; --- Add MSBs (carry only) ---
+    MOV A, #00H          ; Clear A
+    ADDC A, #00H         ; Add carry from LSB addition
+    DA A                 ; Adjust to BCD
+
+    ; --- Store result MSB to 53H ---
+    MOV DPTR, #0053H
+    MOVX @DPTR, A
+
+WAIT:
+    LJMP WAIT
 
 ```
 
-14. ![1742399675461](image/qp/1742399675461.png)
+1.  ![1742399675461](image/qp/1742399675461.png)
 
 ```
 

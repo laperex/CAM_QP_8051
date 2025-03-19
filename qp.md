@@ -176,18 +176,96 @@ WAIT:
 10. ![1742399642305](image/qp/1742399642305.png)
 
 ```
+    MOV DPTR, #0051H    ; DPTR = 51H
+    MOVX A, @DPTR       ; Load LSB of B
+    MOV R0, A           ;
+    MOV DPTR, #0055H    ; DPTR = 55H
+    MOVX A, @DPTR       ; Load LSB of A
 
+    CLR C               ; Clear carry before subtraction
+    SUBB A, R0          ; Subtract LSB
+
+    MOV DPTR, #0040H
+    MOVX @DPTR, A       ; Store result LSB in 40H
+
+    ; --- Subtract MSB with borrow ---
+    MOV DPTR, #0052H    ; DPTR = 52H
+    MOVX A, @DPTR       ; Load MSB of B
+    MOV R0, A           ;
+    MOV DPTR, #0056H    ; DPTR = 56H
+    MOVX A, @DPTR       ; Load MSB of A
+
+    SUBB A, R0          ; Subtract MSB
+
+    MOV DPTR, #0041H    
+    MOVX @DPTR, A       ; Store result MSB in 41H
+
+    JNC POSITIVE        ; Jump if no carry (positive result)
+
+    ; Negative case
+    MOV DPTR, #0042H
+    MOV @DPTR, #01H     ; Store 01H if result is negative
+    LJMP WAIT
+
+POSITIVE:
+    MOV DPTR, #0042H
+    MOV @DPTR, #00H     ; Store 00H if result is positive
+
+WAIT:
+    LJMP WAIT     ; Infinite loop
+
+    
 ```
 
 11. ![1742399650018](image/qp/1742399650018.png)
 
 ```
+    MOV DPTR, #0051H    ; DPTR = 51H
+    MOVX A, @DPTR       ; Load LSB of B
+    MOV R0, A           ;
+    MOV DPTR, #0055H    ; DPTR = 55H
+    MOVX A, @DPTR       ; Load LSB of A
 
+    CLR C               ; Clear carry before subtraction
+    SUBB A, R0          ; Subtract LSB
+
+    MOV DPTR, #0040H
+    MOVX @DPTR, A       ; Store result LSB in 40H
+
+    ; --- Subtract MSB with borrow ---
+    MOV DPTR, #0052H    ; DPTR = 52H
+    MOVX A, @DPTR       ; Load MSB of B
+    MOV R0, A           ;
+    MOV DPTR, #0056H    ; DPTR = 56H
+    MOVX A, @DPTR       ; Load MSB of A
+
+    SUBB A, R0          ; Subtract MSB
+
+    MOV DPTR, #0041H    
+    MOVX @DPTR, A       ; Store result MSB in 41H
+    
+    MOV DPTR, #0041H    ; to store borrow
+    MOV A, #00H         ; A = 0
+    ADDC A, #00H        ; A = A + 0 + Carry ( in this case Carry = Borrow for Subtraction )
+    MOVX @DPTR, A       ; Store Borrow
+    
+    WAIT: LJMP WAIT   ; Infinite loop
 ```
 
 12. ![1742399657760](image/qp/1742399657760.png)
 
 ```
+MOV A, #0FFH        ; Load FFH into accumulator
+MOV DPTR, #0050H    ; Set external address to 50H
+
+LOOP:
+    MOVX @DPTR, A   ; Write FFH to external memory
+    INC DPTR        ; Increment address
+
+    MOV A, DPL
+    CJNE A, #59H, LOOP ; Repeat until address 58H is reached; jumps if A != 59H 
+
+WAIT: LJMP WAIT
 
 ```
 

@@ -714,6 +714,33 @@ void main() {
 
 45. ![1742405811658](image/qp/1742405811658.png)
 
+```C
+#include <reg51.h>
+
+sbit output_pin = P0^0;  // Square wave output on P0.0
+
+void delay_ms(unsigned int ms) {
+    unsigned int i;
+    for (i = 0; i < ms; i++) {
+        TMOD = 0x01; // Timer 0 Mode 1 (16-bit timer)
+        // For 22MHz, machine cycle = 12/22MHz = ~0.545us
+        // So, 1ms ≈ 1835 counts => 65536 - 1835 = 63701 = 0xF8ED
+        TH0 = 0xF8; 
+        TL0 = 0xED;
+        TR0 = 1;          // Start Timer 0
+        while (TF0 == 0); // Wait for overflow
+        TR0 = 0;          // Stop Timer 0
+        TF0 = 0;          // Clear overflow flag
+    }
+}
+
+void main() {
+    while (1) {
+        output_pin = 1;   // ON state
+        delay_ms(3);      // 3ms delay
+        output_pin = 0;   // OFF state
+        delay_ms(5);      // 5ms delay
+    }
+}
 ```
 
-```

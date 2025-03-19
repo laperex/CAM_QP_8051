@@ -303,22 +303,39 @@ WAIT:
 
 ```
 
-1.  ![1742399675461](image/qp/1742399675461.png)
+14.  ![1742399675461](image/qp/1742399675461.png)
 
 ```
+    MOV DPTR, #1000H    ; DPTR = 50H
+    MOV A, #00H         ; A = 00H
+    MOV R0, #0A         ; R0 = 0AH
 
+LOOP:
+    MOVX @DPTR, A       ; MEM[DPTR] = A
+    DJNZ R0, LOOP       ; R0 = R0 - 1 and jump if R0 != 0
+
+WAIT:
+    LJMP WAIT
 ```
 
 15. ![1742399683837](image/qp/1742399683837.png)
 
 ```
+    MOV DPTR, #8100     ; memory location of N = #8100H
+    MOVX A, @DPTR         ; A = N
+    ADD A, #01            ; A = A + 1
+    ADD A, #02            ; A = A + 2
+    ADD A, #03            ; A = A + 3
 
+    MOV DPTR, #0070     ; store result at 0070H
+    MOVX @DPTR, A
 ```
 
 16. ![1742399693148](image/qp/1742399693148.png)
 
 ```
-
+    MOV DPTR, #8100     ; memory location of N = #8100H
+    MOVX A, @DPTR         ; A = N 
 ```
 
 17. ![1742399718718](image/qp/1742399718718.png)

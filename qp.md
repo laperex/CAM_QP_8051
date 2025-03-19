@@ -713,7 +713,6 @@ void main() {
 ```
 
 45. ![1742405811658](image/qp/1742405811658.png)
-
 ```C
 #include <reg51.h>
 
@@ -727,6 +726,7 @@ void delay_ms(unsigned int ms) {
         // So, 1ms ≈ 1835 counts => 65536 - 1835 = 63701 = 0xF8ED
         TH0 = 0xF8; 
         TL0 = 0xED;
+
         TR0 = 1;          // Start Timer 0
         while (TF0 == 0); // Wait for overflow
         TR0 = 0;          // Stop Timer 0
@@ -743,4 +743,11 @@ void main() {
     }
 }
 ```
+# Basic Timer Working
+-   TMOD = 1 (mode select always set 1 for our case)
+-   TH0 and TL0 is the delay required, ie the value the timer must count to
+-   TR0 - ready signal. (when TR0 = 1, timer starts. else it stops)
+-   TF0 - the signal is 1 if timer has completed counting
 
+- Timer Working to determine TH0 and TL0 values: 
+- ![1742419130278](image/qp/1742419130278.png)

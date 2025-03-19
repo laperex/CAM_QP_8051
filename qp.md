@@ -536,7 +536,50 @@ void main() {
 }
 ```
 
-35. ![1742400109794](image/qp/1742400109794.png)
+37. ![1742418063602](image/qp/1742418063602.png)
+
+```C
+#include <reg51.h>  // Header file for 8051 microcontroller
+
+void main() {
+    signed char i;  // signed variable to handle negative numbers
+
+    while (1) {
+        for (i = -4; i <= 4; i++) {
+            P1 = i;  // Send signed value to Port 1
+        }
+    }
+}
+```
+
+40. ![1742418124592](image/qp/1742418124592.png)
+
+```C
+#include <reg51.h>  // Header for AT89S52 (compatible with reg51)
+
+sbit TX_PIN = P1^0;  // Define P1.0 as TX_PIN
+
+void delay() {
+    unsigned int i;
+    for (i = 0; i < 500; i++);  // Simple delay for timing
+}
+
+void main() {
+    unsigned char data = 0x44;  // 44H = 01000100b
+    unsigned char mask = 0x80;  // Start with MSB (10000000b)
+
+    while (mask != 0) {
+        TX_PIN = (data & mask) ? 1 : 0;  // Send bit via TX_PIN
+        delay();                         // Add delay for bit spacing
+        mask >>= 1;                      // Shift to next bit
+    }
+
+    while (1);  // Infinite loop to stop further execution
+}
+
+```
+
+41. ![1742400109794](image/qp/1742400109794.png)
 
 ```C
     #include <reg51.h>

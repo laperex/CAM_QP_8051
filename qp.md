@@ -135,3 +135,93 @@ otherwise, send it to P2.**
 ```
 
 8. ![1742399587021](image/qp/1742399587021.png)
+
+```
+
+```
+
+9. ![1742399629565](image/qp/1742399629565.png)
+
+```
+
+```
+
+10. ![1742399642305](image/qp/1742399642305.png)
+
+```
+
+```
+
+11. ![1742399650018](image/qp/1742399650018.png)
+
+```
+
+```
+
+12. ![1742399657760](image/qp/1742399657760.png)
+
+```
+
+```
+
+13. ![1742399664522](image/qp/1742399664522.png)
+
+```
+
+```
+
+14. ![1742399675461](image/qp/1742399675461.png)
+
+```
+
+```
+
+15. ![1742399683837](image/qp/1742399683837.png)
+
+```
+
+```
+
+16. ![1742399693148](image/qp/1742399693148.png)
+
+```
+
+```
+
+17. ![1742399718718](image/qp/1742399718718.png)
+
+```
+
+```
+
+42. ![1742400109794](image/qp/1742400109794.png)
+
+```C
+    #include <reg51.h>
+
+    // Define pins
+    sbit DOOR_SENSOR = P1^1;  // P1.1
+    sbit BUZZER = P1^7;       // P1.7
+
+    void delay_ms(unsigned int ms) {
+        unsigned int i, j;
+        for(i = 0; i < ms; i++) {
+            for(j = 0; j < 127; j++);  // Roughly 1 ms delay on 11.0592 MHz
+        }
+    }
+
+    void main(void) {
+        while(1) {
+            if(DOOR_SENSOR == 1) { // Door opened (assuming active high)
+                // Generate square wave for buzzer
+                BUZZER = 1;
+                delay_ms(1); // Adjust this for desired frequency (e.g., ~500Hz)
+                BUZZER = 0;
+                delay_ms(1);
+            } else {
+                BUZZER = 0; // Door closed, buzzer off
+            }
+        }
+    }
+
+```

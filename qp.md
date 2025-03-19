@@ -334,14 +334,44 @@ WAIT:
 16. ![1742399693148](image/qp/1742399693148.png)
 
 ```
-    MOV DPTR, #8100     ; memory location of N = #8100H
-    MOVX A, @DPTR         ; A = N 
+    MOV DPTR, #0070H
+    MOVX A, @DPTR       ; A = [70H]
+    MOV A, B              ; B = A
+
+    ; --- Load second number from 71H ---
+    MOV DPTR, #0071H
+    MOVX A, @DPTR      ; Store second number in A
+
+    ; --- Multiply A * B ---
+    MUL AB              ; A * B --> result in A (LSB) and B (MSB)
+
+    ; --- Store LSB result at 52H ---
+    MOV DPTR, #0052H
+    MOVX @DPTR, A
+
+    ; --- Store MSB result at 53H ---
+    MOV DPTR, #0053H
+    MOV A, B
+    MOVX @DPTR, A
+
+WAIT:
+    LJMP WAIT
 ```
 
 17. ![1742399718718](image/qp/1742399718718.png)
 
 ```
+    MOV DPTR, #0050H    ; DPTR = 50H
+    MOV R0, #0A         ; R0 = 0AH
 
+LOOP:
+    MOVX A, @DPTR       ; A = MEM[DPTR]
+    INC A
+    MOVX @DPTR, A       ; MEM[DPTR] = A
+    DJNZ R0, LOOP       ; R0 = R0 - 1 and jump if R0 != 0
+
+WAIT:
+    LJMP WAIT
 ```
 
 42. ![1742400109794](image/qp/1742400109794.png)

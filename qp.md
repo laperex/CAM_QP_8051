@@ -747,7 +747,7 @@ void main() {
 -   **TMOD** = 1 (mode select always set 1 for our case)
 ```
 Mode 0  -	13-bit timer (rarely used)
-Mode 1  -	16-bit timer (THx + TLx)
+Mode 1  -	16-bit timer (THx + TLx) or (TH0 + TL0)
 Mode 2  -	8-bit auto-reload (TLx reloads from THx on overflow)
 Mode 3  -	Split mode (Timer 0 acts as two 8-bit timers, Timer 1 is stopped)
 ```

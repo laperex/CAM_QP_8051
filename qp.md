@@ -167,13 +167,14 @@ WAIT:
 
 LOOP:
     MOVX @DPTR, A       ; MEM[DPTR] = A
+    INC DPTR
     DJNZ R0, LOOP       ; R0 = R0 - 1 and jump if R0 != 0
 
 WAIT:
     LJMP WAIT
 ```
 
-10. ![1742399642305](image/qp/1742399642305.png)
+1.  ![1742399642305](image/qp/1742399642305.png)
 
 ```
     MOV DPTR, #0051H    ; DPTR = 51H
@@ -312,6 +313,7 @@ WAIT:
 
 LOOP:
     MOVX @DPTR, A       ; MEM[DPTR] = A
+    INC DPTR
     DJNZ R0, LOOP       ; R0 = R0 - 1 and jump if R0 != 0
 
 WAIT:
@@ -368,6 +370,7 @@ LOOP:
     MOVX A, @DPTR       ; A = MEM[DPTR]
     INC A
     MOVX @DPTR, A       ; MEM[DPTR] = A
+    INC DPTR
     DJNZ R0, LOOP       ; R0 = R0 - 1 and jump if R0 != 0
 
 WAIT:

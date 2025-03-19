@@ -377,6 +377,85 @@ WAIT:
     LJMP WAIT
 ```
 
+18. ![1742417186696](image/qp/1742417186696.png)
+
+```
+    MOV DPTR, #0060H     ; Start address of numbers
+    CLR A                ; Clear accumulator (sum = 0)
+    MOV R0, #05H         ; Counter for 5 numbers
+
+SUM_LOOP:
+    MOV R2, A           ; R2 = A
+    MOVX A, @DPTR       ; Load number into A
+    MOV R1, A           ; R1 = A
+    MOV A, R2           ; A = R2 [restore early value at A]
+
+    ADD A, R1            ; Add R1 to accumulator
+    INC DPTR             ; Next address
+    DJNZ R0, SUM_LOOP    ; Repeat 5 times
+
+    ; --- Divide sum by 5 ---
+    MOV B, #05H
+    DIV AB               ; A = A / 5, remainder in B
+
+    <!-- ; --- Store result in "H" (let's assume R7 = H) --- -->
+    INC DPTR
+    MOVX @DPTR, A       ; store result in next DPTR address
+
+    ; --- End ---
+WAIT:
+    SJMP WAIT
+
+```
+
+19. ![1742417219724](image/qp/1742417219724.png)
+
+```
+    MOV DPTR, #0060H
+    MOVX A, @DPTR       ; A = number to cube
+    MOV B, A
+    MUL AB              ; A * B = A (LSB), B (MSB) --> A = num^2 LSB, B = num^2 MSB
+
+    ; --- Save num^2 temporarily ---
+    MOV R0, A           ; Store num^2 LSB in R0
+    MOV R1, B           ; Store num^2 MSB in R1
+
+    ; --- Multiply num^2 * num = cube ---
+    MOV DPTR, #0060H
+    MOVX A, @DPTR       ; Load original number again
+    MOV B, R0           ; Multiply with LSB first
+    MUL AB              ; A * B = A (cube LSB), B = middle byte
+    MOV R2, A           ; Save cube LSB in R2
+    MOV R3, B           ; Save middle byte in R3
+
+    MOV A, R1           ; num^2 MSB
+    MOV B, A
+    MOV DPTR, #0060H
+    MOVX A, @DPTR       ; Load original number again
+    MUL AB              ; A * B = A = upper byte contribution
+    ADD A, R3           ; Add middle byte from previous MUL
+    MOV R4, A           ; Save MSB of cube in R4
+
+    ; --- Store results ---
+    MOV DPTR, #0052H
+    MOV A, R2
+    MOVX @DPTR, A       ; Store LSB at 52H
+
+    INC DPTR
+    MOV A, R4
+    MOVX @DPTR, A       ; Store MSB at 53H
+
+    ; --- End ---
+WAIT:
+    LJMP WAIT
+
+```
+
+20. ![1742417238835](image/qp/1742417238835.png)
+
+```
+```
+
 42. ![1742400109794](image/qp/1742400109794.png)
 
 ```C

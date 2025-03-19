@@ -579,7 +579,37 @@ void main() {
 
 ```
 
-41. ![1742400109794](image/qp/1742400109794.png)
+41. ![1742418298511](image/qp/1742418298511.png)
+
+```C
+#include <reg52.h>  // For AT89S52
+
+sbit square_wave = P2^1;  // Define P2.1 for square wave output
+
+void timer0_ISR(void) interrupt 1 {  // Timer 0 interrupt vector
+    square_wave = ~square_wave;  // Toggle P2.1
+    // Reload Timer0 for 100us interrupt (for 200us full period)
+    TH0 = 0xFF;  // Reload high byte (calculated for 100us delay)
+    TL0 = 0x9C;  // Reload low byte
+}
+
+void main() {
+    // Timer 0 setup for 100us delay with XTAL = 24MHz
+    TMOD = 0x01;   // Timer 0 Mode 1 (16-bit timer)
+    TH0 = 0xFF;    // Initial value for 100us
+    TL0 = 0x9C;
+    ET0 = 1;       // Enable Timer 0 interrupt
+    EA = 1;        // Enable global interrupts
+    TR0 = 1;       // Start Timer 0
+
+    while (1) {
+        P1 = P0;  // Continuously transfer 8-bit data from P0 to P1
+    }
+}
+
+```
+
+42. ![1742400109794](image/qp/1742400109794.png)
 
 ```C
     #include <reg51.h>

@@ -745,6 +745,12 @@ void main() {
 ```
 # Basic Timer Working
 -   **TMOD** = 1 (mode select always set 1 for our case)
+```
+Mode 0  -	13-bit timer (rarely used)
+Mode 1  -	16-bit timer (THx + TLx)
+Mode 2  -	8-bit auto-reload (TLx reloads from THx on overflow)
+Mode 3  -	Split mode (Timer 0 acts as two 8-bit timers, Timer 1 is stopped)
+```
 -   **TH0** and **TL0** is the delay required, ie the value the timer must count to
 -   **TR0** - ready signal. (when TR0 = 1, timer starts. else it stops)
 -   **TF0** - the signal is 0 if timer has completed counting else it is 1

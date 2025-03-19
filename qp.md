@@ -503,7 +503,40 @@ WAIT:
 
 ```
 
-1.  ![1742400109794](image/qp/1742400109794.png)
+34. ![1742417911383](image/qp/1742417911383.png)
+
+```C
+    #include <reg51.h>  // Header file for 8051 registers
+
+    void main() {
+        unsigned char i;
+        
+        while (1) {
+            for (i = 0x00; i <= 0xFF; i++) {
+                P1 = i; // Send value to Port 1
+            }
+        }
+    }
+```
+
+35. ![1742418002152](image/qp/1742418002152.png)
+
+```C
+#include <reg51.h>  // 8051 special function register definitions
+
+void main() {
+    unsigned char ascii_values[] = {'0', '1', '2', '3', '4', '5', 'A', 'B', 'C', 'D'};
+    unsigned char i;
+
+    while (1) {
+        for (i = 0; i < 10; i++) {
+            P1 = ascii_values[i];  // Send ASCII value to Port 1
+        }
+    }
+}
+```
+
+35. ![1742400109794](image/qp/1742400109794.png)
 
 ```C
     #include <reg51.h>

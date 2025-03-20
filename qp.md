@@ -692,7 +692,44 @@ WAIT:
     SJMP WAIT
 ```
 
-28. ![1742417911383](image/qp/1742417911383.png)
+28. ![1742437339165](image/qp/1742437339165.png)
+```
+    MOV R0, #30H      ; Point R0 to the base address (30H)
+    MOV R1, #05H      ; Outer loop counter (5 numbers)
+
+LOOP1: 
+    MOV R2, R1    ; Inner loop counter
+    DEC R2        ; Compare up to n-1
+    MOV R0, #30H  ; Reset R0 to base address
+    
+LOOP2:
+    MOV A, @R0    ; Load current element
+    MOV B, A
+    INC R0
+    MOV A, @R0    ; Load next element
+    
+    CJNE A, B, CHECK
+    SJMP SKIP     ; If equal, no swap
+
+CHECK:
+    JC SKIP       ; If A < B, no swap needed
+
+    ; Swap A and B
+    MOV @R0, B
+    DEC R0
+    MOV @R0, A
+    INC R0
+
+SKIP:
+    DJNZ R2, LOOP2
+
+    DJNZ R1, LOOP1
+
+WAIT:
+    LJMP WAIT   ; Endless loop
+
+```
+29. ![1742417911383](image/qp/1742417911383.png)
 
 ```C
     #include <reg51.h>  // Header file for 8051 registers

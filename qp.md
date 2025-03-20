@@ -228,7 +228,7 @@ WAIT:
     MOVX A, @DPTR       ; Load LSB of A
 
     CLR C               ; Clear carry before subtraction
-    SUBB A, R0          ; Subtract LSB
+    ADD A, R0          ; Subtract LSB
 
     MOV DPTR, #0040H
     MOVX @DPTR, A       ; Store result LSB in 40H
@@ -240,7 +240,7 @@ WAIT:
     MOV DPTR, #0056H    ; DPTR = 56H
     MOVX A, @DPTR       ; Load MSB of A
 
-    SUBB A, R0          ; Subtract MSB
+    ADDC A, R0          ; Subtract MSB
 
     MOV DPTR, #0041H    
     MOVX @DPTR, A       ; Store result MSB in 41H

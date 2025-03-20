@@ -729,7 +729,141 @@ WAIT:
     LJMP WAIT   ; Endless loop
 
 ```
-29. ![1742417911383](image/qp/1742417911383.png)
+
+29. ![1742437377721](image/qp/1742437377721.png)
+```
+MOV DPTR, #4321H  ; Base address of the array
+MOV R7, #05H      ; Example: N = 5 numbers (change this for different N)
+
+SORT_OUTER:
+    MOV R6, R7    ; Inner loop count = N
+    DEC R6        ; Compare up to N-1 elements
+    MOV DPTR, #4321H ; Reset DPTR to base address
+
+SORT_INNER:
+    CLR A
+    MOVC A, @A+DPTR ; Load current element
+    MOV B, A
+    INC DPTR
+    CLR A
+    MOVC A, @A+DPTR ; Load next element
+    CJNE A, B, COMPARE
+    SJMP SKIP
+
+COMPARE:
+    JC SKIP       ; If next element < current, no swap needed
+
+    ; Swap values
+    MOV DPL, DPL  ; Adjust DPTR back by 1 to overwrite
+    DEC DPTR
+    MOV A, B
+    MOVC @A+DPTR, A
+    INC DPTR
+    MOV A, @A+DPTR
+    MOVC @A+DPTR, A
+
+SKIP:
+    DJNZ R6, SORT_INNER
+    DJNZ R7, SORT_OUTER
+
+WAIT:
+    LJMP WAIT   ; Endless loop
+```
+
+30. ![1742437398460](image/qp/1742437398460.png)
+```
+    MOV A, R2      ; Load the number from R2 into accumulator
+    MOV B, R2      ; Load the same number into B register
+    MUL AB         ; Multiply A and B, result is in A (low byte) and B (high byte)
+
+    MOV R5, A      ; Store lower byte in R5
+    MOV R6, B      ; Store higher byte in R6
+
+WAIT:
+    LJMP WAIT ; Infinite loop to end program
+```
+
+31. ![1742437514983](image/qp/1742437514983.png)
+```
+    ; Cube = num * num * num
+    MOV A, R0      ; Assume number is in R0
+    MOV B, R0
+    MUL AB         ; A = num * num (square), result in A (lower byte), B (higher byte)
+    MOV R1, A      ; Save lower byte of square in R1
+    MOV R2, B      ; Save higher byte of square in R2
+
+    ; Now multiply square * num
+    MOV A, R1
+    MOV B, R0
+    MUL AB         ; A = lower byte of cube
+    MOV R3, A      ; Save lower byte of cube in R3
+
+    MOV A, R2
+    MOV B, R0
+    MUL AB         ; A = upper part contribution
+    ADD A, B       ; Combine results
+    MOV R4, A      ; Save upper byte of cube in R4
+
+    ; R3 = lower byte, R4 = higher byte of the cube result
+
+WAIT:
+    LJMP WAIT
+```
+32. ![1742437522550](image/qp/1742437522550.png)
+```
+; Assume Timer0 is used
+; Frequency = 1 / period
+
+    MOV TMOD, #01H      ; Timer0 in mode 1 (16-bit)
+AGAIN: 
+    JB P3.2, AGAIN      ; Wait for falling edge
+WAIT_LOW:
+    JNB P3.2, WAIT_LOW  ; Wait till it goes high again
+WAIT_HIGH:
+    JB P3.2, WAIT_HIGH  ; Wait for next falling edge
+
+; Start Timer0
+    CLR TF0
+    SETB TR0
+WAIT_FALL:
+    JB P3.2, WAIT_FALL  ; Wait till falling edge detected
+    CLR TR0             ; Stop timer
+
+    MOV A, TL0
+    MOV B, TH0          ; Timer counts available in A and B
+
+; Further calculations can convert counts to frequency in kHz
+```
+33. ![1742437532882](image/qp/1742437532882.png)
+```
+START:
+    CLR P1.1        ; Initially turn off LED
+
+LOOP: 
+    JNB P1.0, LOOP  ; Wait until button press (active low)
+
+DEBOUNCE:
+    ACALL DELAY     ; Simple debounce delay
+    JNB P1.0, DEBOUNCE
+
+    CPL P1.1        ; Toggle LED
+
+WAIT_RELEASE:
+    JB P1.0, WAIT_RELEASE      ; Wait for button release
+
+    SJMP LOOP
+
+DELAY:
+    MOV R7, #255
+D1:
+    MOV R6, #255
+D2:
+    DJNZ R6, D2
+    DJNZ R7, D1
+    RET
+
+```
+34. ![1742417911383](image/qp/1742417911383.png)
 
 ```C
     #include <reg51.h>  // Header file for 8051 registers

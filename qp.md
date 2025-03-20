@@ -503,7 +503,112 @@ WAIT:
 
 ```
 
-34. ![1742417911383](image/qp/1742417911383.png)
+21. ![1742436228992](image/qp/1742436228992.png)
+
+```
+    MOV DPTR, #6000H      ; Point to external memory location 6000H
+    MOVX A, @DPTR         ; Read 8-bit data into A
+    MOV R0, #08           ; Loop counter for 8 bits
+    MOV R1, #00H          ; R1 will count number of 1's
+    MOV R2, #00H          ; R2 will count number of 0's
+
+COUNT_BITS:
+    RLC A                 ; Rotate left through carry (MSB to CY)
+    JC COUNT_ONE          ; If CY=1, it's a '1'
+
+    INC R2                ; Increment 0's count
+    SJMP NEXT
+
+COUNT_ONE:
+    INC R1                ; Increment 1's count
+
+NEXT:
+    DJNZ R0, COUNT_BITS   ; Repeat for all 8 bits
+
+WAIT:
+    LJMP WAIT             ; Infinite loop to end program
+
+```
+
+22. ![1742436256432](image/qp/1742436256432.png)
+    
+```
+    MOV A, 55H    ; Load LSB into A
+    SWAP A        ; Swap nibbles (left shift by 4 bits)
+    MOV R0, A     ; Store result temporarily
+
+    MOV A, 56H    ; Load middle byte
+    SWAP A
+    MOV 55H, A    ; Store shifted value in 55H
+
+    MOV A, 57H    ; Load MSB
+    SWAP A
+    MOV 56H, A    ; Store shifted MSB to middle byte
+
+    MOV 57H, #00H ; Shifted out bits are filled with 0s
+
+    ; Now OR the nibbles from lower bytes to combine properly
+    MOV A, R0
+    ORL 55H, A
+
+    MOV A, 55H
+    SWAP A
+    ORL 56H, A
+
+    MOV A, 56H
+    SWAP A
+    ORL 57H, A
+
+WAIT:
+    SJMP WAIT
+
+```
+
+23. ![1742436541798](image/qp/1742436541798.png)
+
+```
+    MOV R0, #30H      ; Starting address of data
+    MOV R1, #31H      ; Next address (for shifting)
+    MOV R2, #07H      ; Loop counter (7 shifts for 8 bytes)
+
+SHIFT_LOOP:
+    MOV A, @R1        ; Read byte from next location
+    MOV @R0, A        ; Move it to current location
+    INC R0
+    INC R1
+    DJNZ R2, SHIFT_LOOP
+
+    ; Optional: Clear the last byte
+    MOV A, #00H
+    MOV @R0, A        ; Clear the last position after shift
+
+WAIT:
+    SJMP WAIT
+```
+
+24. ![1742436558680](image/qp/1742436558680.png)
+
+```
+    MOV R0, #40H      ; Starting address to store natural numbers
+    MOV DPTR, #30H    
+    MOVX A, @DPTR     ; Load N from external memory (location 30H)
+    MOV R1, A         ; Copy N to R1 as counter
+    MOV A, #00H       ; Clear Accumulator for sum
+    MOV R2, #01H      ; Start generating numbers from 1
+
+LOOP:
+    ADD A, R2         ; Add current number to sum
+    MOV @R0, R2       ; Store current number at memory pointed by R0
+    INC R2            ; Increment current number
+    INC R0            ; Move to next memory location
+    DJNZ R1, LOOP     ; Repeat until R1 = 0
+
+    ; A contains the sum now
+WAIT:
+    SJMP 
+```
+
+25. ![1742417911383](image/qp/1742417911383.png)
 
 ```C
     #include <reg51.h>  // Header file for 8051 registers
@@ -603,8 +708,10 @@ void main() {
     TMOD = 0x01;   // Timer 0 Mode 1 (16-bit timer)
     TH0 = 0xFF;    // Initial value for 100us
     TL0 = 0x9C;
+    
     ET0 = 1;       // Enable Timer 0 interrupt
     EA = 1;        // Enable global interrupts
+    
     TR0 = 1;       // Start Timer 0
 
     while (1) {
@@ -692,6 +799,7 @@ void delay(unsigned int ms) {
 
 void lcd_send(char ch) {
     P1 = ch;   // Put character on data lines
+
     EN = 1;    // Enable high
     delay(1);  // Small delay
     EN = 0;    // Enable low (data latched)
@@ -743,6 +851,12 @@ void main() {
     }
 }
 ```
+
+46. ![1742434031533](image/qp/1742434031533.png)
+
+```
+```
+
 # Basic Timer Working
 -   **TMOD** = 1 (mode select always set 1 for our case)
 ```

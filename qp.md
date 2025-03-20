@@ -59,7 +59,7 @@
 subroutine. The crystal frequency used is I 1MHz. Assume the machine cycle values as 1 or 2.**
 
 ```
-        MOV P0, #0FFH      ; Set all bits of Port 0 initially
+    MOV P0, #0FFH      ; Set all bits of Port 0 initially
     MAIN_LOOP:
         CPL P0             ; Toggle all bits of Port 0
         ACALL DELAY_1MS    ; Call 1ms delay subroutine
@@ -263,8 +263,8 @@ LOOP:
     MOVX @DPTR, A   ; Write FFH to external memory
     INC DPTR        ; Increment address
 
-    MOV A, DPL
-    CJNE A, #59H, LOOP ; Repeat until address 58H is reached; jumps if A != 59H 
+    MOV R0, DPL
+    CJNE R0, #59H, LOOP ; Repeat until address 58H is reached; jumps if R0 != 59H 
 
 WAIT: LJMP WAIT
 

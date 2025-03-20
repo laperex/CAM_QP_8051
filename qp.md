@@ -1113,8 +1113,8 @@ void main() {
 void main() {
     unsigned char bcd = 0x29;
     
-    unsigned char c1 = (bcd >> 4) && 0xf;
-    unsigned char c2 = bcd && 0xf;
+    unsigned char c1 = (bcd >> 4) & 0xf;
+    unsigned char c2 = bcd & 0xf;
     
     c1 = c1 + 0x30;
     c2 = c2 + 0x30;

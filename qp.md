@@ -953,6 +953,28 @@ void main() {
 }
 ```
 
+47. ![1742437235031](image/qp/1742437235031.png)
+- The program adds all four values.
+- It then performs 2's complement (which is commonly used to generate checksums) by taking the 1's complement and adding 1.
+- The result is stored in checksum.
+```C
+#include <reg51.h>
+
+void main() {
+    unsigned char data1 = 0x25;
+    unsigned char data2 = 0x62;
+    unsigned char data3 = 0x3F;
+    unsigned char data4 = 0x52;
+    unsigned char checksum;
+
+    checksum = data1 + data2 + data3 + data4; // Calculate sum
+    checksum = ~checksum + 1;                 // 2's complement to get checksum
+
+    while(1); // Infinite loop to stop execution here
+}
+
+```
+
 # Basic Timer Working
 -   **TMOD** = 1 (mode select always set 1 for our case)
 ```

@@ -608,7 +608,91 @@ WAIT:
     SJMP 
 ```
 
-25. ![1742417911383](image/qp/1742417911383.png)
+25. ![1742436697936](image/qp/1742436697936.png)
+```
+    MOV DPTR, #30H       ; Load address of N
+    MOVX A, @DPTR        ; Load N from external memory
+    MOV R0, A            ; Store N in R0 as counter
+    MOV A, #00H          ; Clear Accumulator for sum
+    MOV R1, #01H         ; Start number from 1
+
+LOOP:
+    MOV B, R1            ; Move current number to B
+    JNB ACC.0, ADD       ; If last result was positive, subtract next
+    CLR C
+    SUBB A, B
+    SJMP NEXT
+
+ADD:
+    ADD A, B             ; Add number to sum
+
+NEXT:
+    INC R1               ; Increment current number
+    DJNZ R0, LOOP        ; Loop till N terms
+
+WAIT:
+    SJMP WAIT
+
+
+```
+
+26. ![1742436743979](image/qp/1742436743979.png)
+
+```
+    MOV DPTR, #30H       ; Load address where N is stored
+    MOVX A, @DPTR        ; Load N (number of elements)
+    MOV R0, A            ; Store N in R0 as counter
+    MOV DPTR, #40H       ; Array starts at 40H
+    MOVX A, @DPTR        ; Load first element
+    MOV R1, A            ; Assume first element is largest
+
+NEXT_NUM:
+    INC DPTR             ; Move to next element
+    MOVX A, @DPTR        ; Load next number
+    CJNE A, R1, CHECK    ; If A != R1, check if A > R1
+    SJMP CONTINUE
+
+CHECK:
+    JC CONTINUE          ; If A < R1, skip
+    MOV R1, A            ; Else update largest in R1
+
+CONTINUE:
+    DJNZ R0, NEXT_NUM    ; Repeat until all elements checked
+
+    ; Final answer (largest) in R1
+WAIT:
+    SJMP WAIT
+
+```
+
+27. ![1742436773764](image/qp/1742436773764.png)
+```
+    MOV DPTR, #30H       ; Load address where N is stored
+    MOVX A, @DPTR        ; Load N (number of elements)
+    MOV R0, A            ; Store N in R0 as counter
+    MOV DPTR, #40H       ; Array starts at 40H
+    MOVX A, @DPTR        ; Load first element
+    MOV R1, A            ; Assume first element is smallest
+
+NEXT_NUM:
+    INC DPTR             ; Move to next element
+    MOVX A, @DPTR        ; Load next number
+    CJNE A, R1, CHECK    ; If A != R1, check if A < R1
+    SJMP CONTINUE
+
+CHECK:
+    JNC CONTINUE         ; If A >= R1, skip
+    MOV R1, A            ; Else update smallest in R1
+
+CONTINUE:
+    DJNZ R0, NEXT_NUM    ; Repeat until all elements checked
+
+    ; Final answer (smallest) in R1
+WAIT:
+    SJMP WAIT
+```
+
+28. ![1742417911383](image/qp/1742417911383.png)
 
 ```C
     #include <reg51.h>  // Header file for 8051 registers
@@ -854,7 +938,19 @@ void main() {
 
 46. ![1742434031533](image/qp/1742434031533.png)
 
-```
+```C
+void main() {
+    unsigned char bcd = 0x29;
+    
+    unsigned char c1 = (bcd >> 4) && 0xf;
+    unsigned char c2 = bcd && 0xf;
+    
+    c1 = c1 + 0x30;
+    c2 = c2 + 0x30;
+
+    P1 = c1;
+    P2 = c2;
+}
 ```
 
 # Basic Timer Working

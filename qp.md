@@ -1167,6 +1167,7 @@ void main() {
 ```
 
 49. ![1747064228505](image/qp/1747064228505.png)
+
 ```C
 #include <reg51.h>
 
@@ -1184,6 +1185,38 @@ void main() {
         SBUF = string[i];
 
         while (TI == 0);	// wait till TI = 1
+    }
+}
+```
+50. ![1747064776135](image/qp/1747064776135.png)
+```C
+#include <reg51.h>
+
+void main() {
+    TMOD = 0x20;
+    TH1 = 0xFA;		// for baud rate of 4800
+    SCON = 0x50;
+    
+    TR1 = 1;
+    
+    int i = 0;
+    while (1) {
+        if (i == 0) {			// can also be replaced with a switch...case statement
+            SBUF = P0;
+        } else if (i == 1) {
+            SBUF = P1;
+        } else if (i == 2) {
+            SBUF = P2;
+        }
+        
+        if (i < 2) {
+            i += 1;
+        } else {
+            i = 0;
+        }
+
+        TI = 0;
+        while (TI == 0);	// wait until TI = 1, ie data has finished transmitting
     }
 }
 ```

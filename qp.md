@@ -1146,6 +1146,50 @@ void main() {
 
 ```
 
+48. ![1747064213415](image/qp/1747064213415.png)
+```C
+#include <reg51.h>
+
+void main() {
+	TMOD = 0x20;
+	TH1 = 0xFA;		// for baud rate of 4800
+	SCON = 0x50;
+	
+	TR1 = 1;
+	
+	while (1) {
+		TI = 0;
+		SBUF = 'A';
+
+		while (TI == 0);	// wait till TI = 1
+	}
+}
+```
+
+49. ![1747064228505](image/qp/1747064228505.png)
+```C
+#include <reg51.h>
+
+void main() {
+	char name[] = "EARTH";
+
+	TMOD = 0x20;
+	TH1 = 0xFA;		// for baud rate of 4800
+	SCON = 0x50;
+	
+	TR1 = 1;
+	
+	int idx = 0;
+
+	while (name[idx] != '\0') {
+		TI = 0;
+		SBUF = name[idx];
+
+		while (TI == 0);	// wait till TI = 1
+	}
+}
+```
+
 # Basic Timer Working
 -   **TMOD** = 1 (mode select always set 1 for our case)
 ```
@@ -1160,3 +1204,5 @@ Mode 3  -	Split mode (Timer 0 acts as two 8-bit timers, Timer 1 is stopped)
 
 - Timer Working to determine TH0 and TL0 values: 
 - ![1742419130278](image/qp/1742419130278.png)
+
+

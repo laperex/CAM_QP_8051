@@ -1151,18 +1151,18 @@ void main() {
 #include <reg51.h>
 
 void main() {
-	TMOD = 0x20;
-	TH1 = 0xFA;		// for baud rate of 4800
-	SCON = 0x50;
-	
-	TR1 = 1;
-	
-	while (1) {
-		TI = 0;
-		SBUF = 'A';
+    TMOD = 0x20;
+    TH1 = 0xFA;		// for baud rate of 4800
+    SCON = 0x50;
+    
+    TR1 = 1;
+    
+    while (1) {
+        TI = 0;
+        SBUF = 'A';
 
-		while (TI == 0);	// wait till TI = 1
-	}
+        while (TI == 0);	// wait till TI = 1
+    }
 }
 ```
 
@@ -1171,22 +1171,22 @@ void main() {
 #include <reg51.h>
 
 void main() {
-	char name[] = "EARTH";
+    char name[] = "EARTH";
 
-	TMOD = 0x20;
-	TH1 = 0xFA;		// for baud rate of 4800
-	SCON = 0x50;
-	
-	TR1 = 1;
-	
-	int idx = 0;
+    TMOD = 0x20;
+    TH1 = 0xFA;		// for baud rate of 4800
+    SCON = 0x50;
+    
+    TR1 = 1;
+    
+    int idx = 0;
 
-	while (name[idx] != '\0') {
-		TI = 0;
-		SBUF = name[idx];
+    while (name[idx] != '\0') {
+        TI = 0;
+        SBUF = name[idx];
 
-		while (TI == 0);	// wait till TI = 1
-	}
+        while (TI == 0);	// wait till TI = 1
+    }
 }
 ```
 

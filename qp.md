@@ -1220,6 +1220,37 @@ void main() {
     }
 }
 ```
+51. ![1747064776135](image/qp/1747064776135.png)
+```
+ORG 0000H
+
+MOV TMOD, #20H
+MOV TH1, #0FAH
+MOV SCON, #50H
+
+SETB TR1            ; start serial timer
+
+LOOP:
+    MOV A, P0       ; read P0 to A [ A = P0 ]
+    ACALL SEND      ; serially transmit P0
+    MOV A, P1
+    ACALL SEND
+    MOV A, P2
+    ACALL SEND
+    
+    LJMP LOOP
+
+SEND:
+    CLR TI          ; TI = 0
+    MOV SBUF, A     ; SBUF = A
+    
+WAIT:
+    JNB TI, WAIT
+
+    RET
+
+END
+```
 
 # Basic Timer Working
 -   **TMOD** = 1 (mode select always set 1 for our case)

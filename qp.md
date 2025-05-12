@@ -1252,6 +1252,42 @@ WAIT:
 END
 ```
 
+52. Serial interrupts read and write
+```C
+#include <reg51.h>
+
+// serial interrupt is triggered when RI or TI is active!
+void Serial_ISR(void) interrupt 4 {
+    if (RI) {   // if RI is triggered (ie, data received completeley)
+        char received_byte = SBUF; // Read the received data
+        RI = 0;                    // Clear receive interrupt flag
+
+        // transmit received byte
+        SBUF = received_byte;      // Transmit back the same byte
+    }
+
+    if (TI) {   // if TI is trigerred (ie, data transmitted completeley)
+        TI = 0;
+    }
+}
+
+void main() {
+    TMOD = 0x20; // Timer1, Mode2, auto-reload
+    TH1 = 0xFD;  // 9600 baud rate for 11.0592 MHz crystal clock freq (-3)
+    SCON = 0x50; // Mode 1 (8-bit UART), REN enabled
+
+    TR1 = 1;     // Start Timer1
+
+    EA = 1;      // Enable global interrupts
+    ES = 1;      // Enable serial interrupts
+
+
+    while (1) {
+        // Main loop can do other things; UART handled via interrupt
+    }
+}
+```
+
 # Basic Timer Working
 -   **TMOD** = 1 (mode select always set 1 for our case)
 ```

@@ -1171,7 +1171,7 @@ void main() {
 #include <reg51.h>
 
 void main() {
-    char name[] = "EARTH";
+    char string[] = "EARTH";
 
     TMOD = 0x20;
     TH1 = 0xFA;		// for baud rate of 4800
@@ -1179,11 +1179,9 @@ void main() {
     
     TR1 = 1;
     
-    int idx = 0;
-
-    while (name[idx] != '\0') {
+    for (int i = 0; string[i] != '\0'; i++) {
         TI = 0;
-        SBUF = name[idx];
+        SBUF = string[i];
 
         while (TI == 0);	// wait till TI = 1
     }
